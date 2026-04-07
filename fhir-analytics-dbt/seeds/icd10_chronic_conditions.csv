@@ -1,0 +1,24 @@
+icd10_code,condition_name,condition_category
+E10,Type 1 diabetes mellitus,diabetes
+E11,Type 2 diabetes mellitus,diabetes
+E13,Other specified diabetes mellitus,diabetes
+I10,Essential (primary) hypertension,hypertension
+I11,Hypertensive heart disease,hypertension
+I12,Hypertensive chronic kidney disease,hypertension
+I25,Chronic ischemic heart disease,cardiovascular
+I50,Heart failure,cardiovascular
+J44,Other chronic obstructive pulmonary disease,respiratory
+J45,Asthma,respiratory
+N18,Chronic kidney disease (CKD),renal
+F32,Major depressive disorder single episode,mental_health
+F33,Major depressive disorder recurrent,mental_health
+F41,Other anxiety disorders,mental_health
+F31,Bipolar disorder,mental_health
+E78,Disorders of lipoprotein metabolism,metabolic
+E66,Obesity,metabolic
+M05,Rheumatoid arthritis with rheumatoid factor,musculoskeletal
+M06,Other rheumatoid arthritis,musculoskeletal
+G43,Migraine,neurological
+G40,Epilepsy and recurrent seizures,neurological
+K50,Crohn's disease,gastrointestinal
+K51,Ulcerative colitis,gastrointestinal

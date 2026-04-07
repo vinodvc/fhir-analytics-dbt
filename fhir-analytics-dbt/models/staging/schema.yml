@@ -1,0 +1,84 @@
+version: 2
+
+sources:
+  - name: raw_fhir
+    description: "Raw FHIR R4 resources loaded by the Metriport ingestion script"
+    database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+    schema: raw_fhir
+    tables:
+      - name: patients
+      - name: conditions
+      - name: observations
+      - name: encounters
+      - name: medication_requests
+
+models:
+  - name: stg_fhir__patients
+    description: >
+      Typed, deduplicated FHIR Patient resources. One row per patient_id.
+      Source: Metriport consolidated FHIR API → raw_fhir.patients.
+    columns:
+      - name: patient_id
+        description: "Metriport patient identifier (FHIR Resource.id)"
+        tests:
+          - unique
+          - not_null
+      - name: birth_date
+        description: "Patient date of birth (FHIR birthDate)"
+        tests:
+          - not_null
+      - name: age_years
+        description: "Current age in years, derived from birth_date"
+      - name: gender
+        description: "FHIR gender (male | female | other | unknown)"
+        tests:
+          - accepted_values:
+              values: ['male', 'female', 'other', 'unknown']
+      - name: urban_rural_classification
+        description: "Simplified urban/rural classification derived from postal code prefix"
+        tests:
+          - accepted_values:
+              values: ['urban', 'suburban', 'rural']
+
+  - name: stg_fhir__conditions
+    description: >
+      FHIR Condition resources, filtered to valid clinical statuses.
+      May contain multiple rows per patient (one per diagnosis).
+      Deduplication across HIE sources happens in int_deduped_conditions.
+    columns:
+      - name: condition_id
+        description: "FHIR Condition resource ID"
+        tests:
+          - not_null
+      - name: patient_id
+        description: "FK to stg_fhir__patients"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_fhir__patients')
+              field: patient_id
+      - name: clinical_status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'recurrence', 'relapse', 'inactive', 'remission', 'resolved']
+      - name: condition_category
+        tests:
+          - accepted_values:
+              values: ['diabetes_t2', 'diabetes_t1', 'hypertension', 'mental_health', 'asthma_copd', 'ckd', 'other']
+
+  - name: stg_fhir__observations
+    description: >
+      FHIR Observation resources (labs, vitals, screenings).
+      Includes LOINC code normalization for care gap matching.
+    columns:
+      - name: observation_id
+        tests:
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['registered', 'preliminary', 'final', 'amended', 'corrected', 'cancelled', 'entered-in-error', 'unknown']

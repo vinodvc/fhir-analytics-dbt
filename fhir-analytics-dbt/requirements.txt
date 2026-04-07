@@ -1,0 +1,24 @@
+# Core data
+pandas>=2.1.0
+numpy>=1.26.0
+snowflake-connector-python>=3.6.0
+dbt-snowflake==1.7.2
+
+# FHIR parsing
+fhir.resources==7.1.0
+
+# ML
+scikit-learn>=1.4.0
+joblib>=1.3.0
+
+# Analytics / tracking
+posthog>=3.0.0
+
+# Utils
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Dev / testing
+pytest>=7.4.0
+ruff>=0.2.0
+mypy>=1.8.0
